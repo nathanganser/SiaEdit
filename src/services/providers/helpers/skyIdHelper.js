@@ -7,7 +7,15 @@ import userSvc from '../../userSvc';
 import badgeSvc from '../../badgeSvc';
 import SkyID from '../../skyidapp/export/module';
 
-const opts = { devMode : false };
+var devMode = true
+//
+// if (window.location.hostname == 'idtest.local' || window.location.hostname == 'localhost' || window.location.protocol == 'file:') {
+// 	var devMode = true
+// } else {
+// 	var devMode = false
+// }
+
+const opts = { devMode : devMode };
 let done = false;
 let skyid = new SkyID('StackEdit', async (message) => {
   done = true;
