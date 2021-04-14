@@ -1,5 +1,5 @@
 CACHE MANIFEST
-#ver:4/14/2021, 1:29:19 PM
+#ver:4/14/2021, 3:26:44 PM
 #plugin:5.0.7
 
 CACHE:
@@ -18,8 +18,8 @@ CACHE:
 /static/landing/navigation-bar.png
 /static/sitemap.xml
 /static/landing/gfm.png
-/static/landing/logo.svg
 /static/landing/mermaid.gif
+/static/landing/logo.svg
 /static/landing/smart-layout.png
 /static/landing/twemoji.png
 /static/landing/workspace.png
