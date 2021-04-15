@@ -1,11 +1,8 @@
 CACHE MANIFEST
-#ver:4/15/2021, 2:11:02 AM
+#ver:4/15/2021, 11:41:02 AM
 #plugin:5.0.7
 
 CACHE:
-/icons-c75a9472175cc17394ba6428d867fbcf/favicon.ico
-/icons-c75a9472175cc17394ba6428d867fbcf/manifest.json
-/icons-c75a9472175cc17394ba6428d867fbcf/manifest.webapp
 /6c9e426d5f62174f07b2.worker.js
 /static/fonts/RobotoMono-Bold.819f3b2.woff
 /static/fonts/RobotoMono-Regular.0b6a547.woff
@@ -14,8 +11,8 @@ CACHE:
 /static/fonts/lato-normal-italic.f28f2d6.woff
 /static/fonts/lato-normal.27bd77b.woff
 /static/js/vendor.e0a7aa45740bc44a2068.js
-/static/js/app.ec323be33e61a93547aa.js
-/static/js/manifest.317b8f38a14ae679ccd3.js
+/static/js/app.f51e839a6153ff980601.js
+/static/js/manifest.399c5e014e7f45b644b0.js
 /static/css/app.0bb1848afb052ae50050415fa0dfbe2e.css
 /static/landing/katex.gif
 /static/landing/navigation-bar.png
@@ -28,8 +25,8 @@ CACHE:
 /static/landing/workspace.png
 /static/landing/abc.png
 /static/landing/syntax-highlighting.gif
-/static/landing/favicon.ico
 /static/landing/discussion.png
+/static/landing/favicon.ico
 /static/landing/providers.png
 /static/landing/scroll-sync.gif
 /manifest.c9128ce574e7548a3b0d3bcd8bfa212c.json
