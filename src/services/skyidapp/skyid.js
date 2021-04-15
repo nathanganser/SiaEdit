@@ -80,7 +80,7 @@ async sessionStart() {
 			}
 
 			if (devMode) {
-				var devModeString = '&devMode=true'
+				var devModeString = ''
 			} else {
 				var devModeString = ''
 			}
