@@ -6,5 +6,10 @@
  "private": true,
  "scripts": {
    "postinstall": "npm install express"
- }
+ },
+  "dependencies": {
+     "compression": "^1.7.0",
+     "serve-static": "^1.13.2",
+     "body-parser": "^1.18.2",
+  }
 }
