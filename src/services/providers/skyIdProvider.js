@@ -3,7 +3,6 @@
 import store from '../../store';
 import skyIdHelper from './helpers/skyIdHelper';
 import Provider from './common/Provider';
-//  import utils from '../utils';
 import workspaceSvc from '../workspaceSvc';
 
 export default new Provider({
@@ -22,7 +21,6 @@ export default new Provider({
     console.log('yes here');
     const sky = await skyIdHelper.uploadNote({
       ...syncLocation,
-      token,
       id: syncLocation.filename,
       type: 'file',
       workspace: Object.keys(store.getters['data/skyIdTokensBySub'])[0],

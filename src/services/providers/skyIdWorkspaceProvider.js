@@ -42,9 +42,6 @@ export default new Provider({
 
     if (!token) {
       token = store.getters['data/skyIdTokensBySub'][Object.keys(store.getters['data/skyIdTokensBySub'])[0]];
-      //await store.dispatch('modal/open', { type: 'skyIdAccount' });
-      //token = await skyIdHelper.addAccount(store.getters['data/localSettings'].skyIdNoteAccess);
-      //console.log(token);
     }
 
     if (!workspace) {
@@ -70,59 +67,7 @@ export default new Provider({
     const result = await skyIdHelper.downloadNote({workspace: dbName});
     console.log("at getchanges");
     console.log(result);
-    const ret = {
-      changes: [],
-    }
-    /*Object.keys(result).forEach((name) => {
-      ret.changes = [...ret.changes, {filename: name, file: result[name], type: result[name].type}];
-    });
-    return ret.changes;*/
-    ret.changes = [...ret.changes, result];
     return result;
-    /*
-    let allItemsById = { ...store.getters.allItemsById };
-    let syncDataById = { ...store.getters['data/syncDataById'] };
-    console.log("getchanges:" + syncDataById);
-    let changes = [];
-  //  console.log(result);
-    const x = Object.keys(syncDataById).filter((fil) => {
-      let item = null;
-      let file = syncDataById[fil];
-      for(var key in result){
-        if(key === file.id){
-            item = utils.addItemHash({
-              id: file.id,
-              type: 'file',
-              name: file.id,
-            });
-            break;
-        }
-      }
-      if(item == null){
-        changes.push({
-          syncDataId: file.id,
-          item,
-          syncData: {
-            id: file.id,
-            type: 'file',
-            hash: 'tes',
-          },
-        });
-      }
-      else{
-        changes.push({
-          syncDataId: file.id,
-          item,
-          syncData: {
-            id: file.id,
-            type: item.type,
-            hash: item.hash,
-          },
-        });
-      }
-      return true;
-    });
-    return changes;*/
   },
 
   prepareChanges(changes) {
@@ -146,21 +91,18 @@ export default new Provider({
         found[change.filename] = true;
         change.item = utils.addItemHash(item);
         if (change.type === 'file') {
-          // create a fake change as a file content change
           const id = `${change.id}/content`;
           const syncDataId = `${change.filename}/content`;
           contentChange = {
             item: {
               id,
               type: 'content',
-              // Need a truthy value to force saving sync data
               hash: 1,
             },
             syncData: {
               id: syncDataId,
               itemId: id,
               type: 'content',
-              // Need a truthy value to force downloading the content
               hash: 1,
             },
             syncDataId,
@@ -168,8 +110,6 @@ export default new Provider({
           found[syncDataId] = true;
         }
 
-
-      // Build sync data
       change.syncData = {
         id: change.filename,
         itemId: change.item.id,
@@ -178,7 +118,6 @@ export default new Provider({
         hash: change.item.hash,
       };
 
-      // Push change
       change.syncDataId = change.filename;
       result.push(change);
       if (contentChange) {
