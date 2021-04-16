@@ -34,6 +34,12 @@ export default new Provider({
     const workspaceId = utils.makeWorkspaceId(workspaceParams);
     const workspace = store.getters['workspace/workspacesById'][workspaceId];
 
+    if(dbName != 'My SiaEdit'){
+      throw new Error('Invalid database name.');
+    }
+
+    console.log(workspace);
+
     let token;
     if (workspace) {
       console.log(workspace.sub);
