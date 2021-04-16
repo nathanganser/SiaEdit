@@ -5,13 +5,13 @@
         <icon-provider provider-id="skyId"></icon-provider>
       </div>
       <p>Link your <b>SkyID</b> account to <b>StackEdit</b>.</p>
-      <div class="form-entry">
+      <!-- <div class="form-entry">
         <div class="form-entry__checkbox">
           <label>
             <input type="checkbox" v-model="noteAccess"> Grant access to your notes
           </label>
         </div>
-      </div>
+      </div> -->
     </div>
     <div class="modal__button-bar">
       <button class="button" @click="config.reject()">Cancel</button>

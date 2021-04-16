@@ -1,7 +1,8 @@
 <template>
   <modal-inner aria-label="Add SkyDB workspace">
     <div  v-if="entries.length">
-      <div class="modal__content">
+      {{resolve()}}
+      <!-- <div class="modal__content">
         <div class="modal__image">
           <icon-provider provider-id="skyId"></icon-provider>
         </div>
@@ -13,7 +14,7 @@
       <div class="modal__button-bar">
         <button class="button" @click="config.reject()">Cancel</button>
         <button class="button button--resolve" @click="resolve()">Ok</button>
-      </div>
+      </div> -->
     </div>
     <div v-else>
       <div class="modal__content">
@@ -21,13 +22,13 @@
           <icon-provider provider-id="skyId"></icon-provider>
         </div>
         <p>Link your <b>SkyID</b> account to <b>StackEdit</b> first.</p>
-        <div class="form-entry">
+        <!-- <div class="form-entry">
           <div class="form-entry__checkbox">
             <label>
               <input type="checkbox" v-model="noteAccess"> Grant access to your notes
             </label>
           </div>
-        </div>
+        </div> -->
       </div>
       <div class="modal__button-bar">
         <button class="button" @click="config.reject()">Cancel</button>
@@ -67,20 +68,15 @@ export default modalTemplate({
 
   methods: {
     resolve() {
-      if (!this.dbName) {
-        this.setError('dbName');
-      } else {
-        //  check url returned by utils
-        const url = utils.addQueryParams('app', {
-          providerId: 'skyIdWorkspace',
-          dbName: this.dbName,
-        }, true);
-        this.config.resolve();
-        window.open(url);
-      }
+      const url = utils.addQueryParams('app', {
+        providerId: 'skyIdWorkspace',
+        dbName: 'My SiaEdit',
+      }, true);
+      this.config.resolve();
+      window.open(url);
     },
     async addSkyIdAccount() {
-      await skyIdHelper.addAccount(store.getters['data/localSettings'].skyIdNoteAccess);
+      await skyIdHelper.addAccount(true);
     },
   },
 });
