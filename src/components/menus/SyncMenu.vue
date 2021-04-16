@@ -222,7 +222,7 @@ export default {
     async addSkyIdAccount() {
       try {
         await store.dispatch('modal/open', { type: 'skyIdAccount' });
-        await skyIdHelper.addAccount(store.getters['data/localSettings'].skyIdNoteAccess);
+        await skyIdHelper.addAccount(true);
       } catch (e) { /* cancel */ }
     },
     async openDropbox(token) {
