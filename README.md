@@ -1,4 +1,5 @@
 # SiaEdit
+*[Try it out!](https://siaedit.com)*
 
 > Full-featured, open-source Markdown editor that stores your data on Sia's decentralized storage layer.
 
