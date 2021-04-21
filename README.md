@@ -8,6 +8,7 @@ SiaEdit is a fork of [StackEdit](https://stackedit.io/). All the credits of buil
 ## Roadmap
 
  - [x] Add an integration to Skynet (using [SkyId](https://github.com/DaWe35/SkyID))
+ - [ ] Finish rebranding of the app
  - [ ] Remove the server side of the app
  - [ ] Deploy the app as a Skapp with it's custom Handshake domain
  - [ ]  Add ability to publish notes to Skynet using [MySky](https://siasky.net/docs/#mysky)
