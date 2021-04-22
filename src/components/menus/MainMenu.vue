@@ -53,7 +53,7 @@
       <div><div class="menu-entry__label menu-entry__label--count" v-if="syncLocationCount">{{syncLocationCount}}</div> Synchronize</div>
       <span>Sync your files in the Cloud.</span>
     </menu-entry>
-    <menu-entry @click.native="setPanel('publish')">
+    <menu-entry @click.native="publish">
       <icon-upload slot="icon"></icon-upload>
       <div><div class="menu-entry__label menu-entry__label--count" v-if="publishLocationCount">{{publishLocationCount}}</div>Publish</div>
       <span>Export your files to the web.</span>
@@ -124,6 +124,8 @@
 </template>
 
 <script>
+/* eslint-disable */
+
 import { mapGetters, mapActions } from 'vuex';
 import MenuEntry from './common/MenuEntry';
 import providerRegistry from '../../services/providers/common/providerRegistry';
@@ -131,6 +133,8 @@ import UserImage from '../UserImage';
 import googleHelper from '../../services/providers/helpers/googleHelper';
 import syncSvc from '../../services/syncSvc';
 import userSvc from '../../services/userSvc';
+import exportSvc from '../../services/exportSvc';
+import badgeSvc from '../../services/badgeSvc';
 import store from '../../store';
 
 export default {
@@ -225,6 +229,15 @@ export default {
     },
     about() {
       store.dispatch('modal/open', 'about');
+    },
+    async publish() {
+       const currentFile = store.getters['file/current'];
+       const allTemplatesById = store.getters['data/allTemplatesById'];
+       try {
+       const url = await exportSvc.exportToSkynet(currentFile.id, 'html', allTemplatesById['styledHtml']);
+       window.open(url);
+       badgeSvc.addBadge('exportHtml');
+     } catch (e) { /* Cancel */ }
     },
   },
 };
