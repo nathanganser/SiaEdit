@@ -1,5 +1,8 @@
+/* eslint-disable */
+
 import FileSaver from 'file-saver';
 import TemplateWorker from 'worker-loader!./templateWorker.js'; // eslint-disable-line
+import { SkynetClient } from 'skynet-js';
 import localDbSvc from './localDbSvc';
 import markdownConversionSvc from './markdownConversionSvc';
 import extensionSvc from './extensionSvc';
@@ -35,6 +38,7 @@ function groupHeadings(headings, level = 1) {
 }
 
 const containerElt = document.createElement('div');
+const skyClient = new SkynetClient('https://siasky.net');
 containerElt.className = 'hidden-rendering-container';
 document.body.appendChild(containerElt);
 
@@ -120,5 +124,25 @@ export default {
       type: 'text/plain;charset=utf-8',
     });
     FileSaver.saveAs(blob, `${file.name}.${type}`);
+  },
+
+  async exportToSkynet(fileId, type, template) {
+    store.state.queue.isEmpty = false;
+    const file = store.state.file.itemsById[fileId];
+    let url = null;
+    const html = await this.applyTemplate(fileId, template);
+    const blob = new Blob([html], {
+      type: 'text/html;charset=utf-8',
+    });
+    const htmlFile = new File([blob], `${file.name}.${type}`, { type: blob.type });
+    try {
+      const skylink = await skyClient.uploadFile(htmlFile);
+      url = 'https://siasky.net/' + skylink.split(':')[1];
+    } catch (error) {
+      console.log(error);
+    }
+    if(url) store.dispatch('notification/info', `File published successfully.`);
+    store.state.queue.isEmpty = true;
+    return url;
   },
 };
