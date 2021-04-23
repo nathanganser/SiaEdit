@@ -1,8 +1,8 @@
 {
- "name": "StackEdit",
+ "name": "SiaEdit",
  "version": "1.0.0",
  "description": "personalblog",
- "author": "Awesome Author",
+ "author": "SiaEdit Community",
  "private": true,
  "scripts": {
    "postinstall": "npm install express"
