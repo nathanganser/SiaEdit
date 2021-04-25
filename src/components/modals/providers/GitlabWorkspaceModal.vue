@@ -50,7 +50,7 @@ export default modalTemplate({
         this.setError('projectUrl');
       } else {
         const path = this.path && this.path.replace(/^\//, '');
-        const url = utils.addQueryParams('app', {
+        const url = utils.addQueryParams('', {
           providerId: 'gitlabWorkspace',
           serverUrl: this.config.token.serverUrl,
           projectPath,

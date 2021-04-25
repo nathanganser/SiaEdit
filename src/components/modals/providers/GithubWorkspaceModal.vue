@@ -50,7 +50,7 @@ export default modalTemplate({
         this.setError('repoUrl');
       } else {
         const path = this.path && this.path.replace(/^\//, '');
-        const url = utils.addQueryParams('app', {
+        const url = utils.addQueryParams('', {
           ...parsedRepo,
           providerId: 'githubWorkspace',
           branch: this.branch || 'master',

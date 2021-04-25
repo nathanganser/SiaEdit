@@ -47,7 +47,7 @@ export default modalTemplate({
       );
     },
     resolve() {
-      const url = utils.addQueryParams('app', {
+      const url = utils.addQueryParams('', {
         providerId: 'googleDriveWorkspace',
         folderId: this.folderId,
         sub: this.config.token.sub,

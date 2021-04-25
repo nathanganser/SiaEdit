@@ -68,7 +68,7 @@ export default modalTemplate({
 
   methods: {
     resolve() {
-      const url = utils.addQueryParams('app', {
+      const url = utils.addQueryParams('', {
         providerId: 'skyIdWorkspace',
         dbName: 'My SiaEdit',
       }, true);
