@@ -17,7 +17,7 @@ var devMode = true
 
 const opts = { devMode : devMode };
 let done = false;
-let skyid = new SkyID('StackEdit', async (message) => {
+let skyid = new SkyID('SiaEdit', async (message) => {
   done = true;
   switch (message) {
     case 'login_fail':

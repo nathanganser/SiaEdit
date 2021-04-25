@@ -6,13 +6,13 @@ import workspaceSvc from '../workspaceSvc';
 
 const makePathAbsolute = (token, path) => {
   if (!token.fullAccess) {
-    return `/Applications/StackEdit (restricted)${path}`;
+    return `/Applications/SiaEdit (restricted)${path}`;
   }
   return path;
 };
 const makePathRelative = (token, path) => {
   if (!token.fullAccess) {
-    return path.replace(/^\/Applications\/StackEdit \(restricted\)/, '');
+    return path.replace(/^\/Applications\/SiaEdit \(restricted\)/, '');
   }
   return path;
 };

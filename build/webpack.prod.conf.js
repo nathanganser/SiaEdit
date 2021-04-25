@@ -102,10 +102,10 @@ var webpackConfig = merge(baseWebpackConfig, {
     ]),
     new FaviconsWebpackPlugin({
       logo: resolve('src/assets/favicon.png'),
-      title: 'StackEdit',
+      title: 'SiaEdit',
     }),
     new WebpackPwaManifest({
-      name: 'StackEdit',
+      name: 'SiaEdit',
       description: 'Full-featured, open-source Markdown editor',
       display: 'standalone',
       orientation: 'any',

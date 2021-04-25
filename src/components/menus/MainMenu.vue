@@ -118,7 +118,7 @@
     </menu-entry>
     <menu-entry @click.native="about">
       <icon-help-circle slot="icon"></icon-help-circle>
-      About StackEdit
+      About SiaEdit
     </menu-entry>
   </div>
 </template>

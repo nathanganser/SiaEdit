@@ -21,7 +21,7 @@
         <div class="modal__image">
           <icon-provider provider-id="skyId"></icon-provider>
         </div>
-        <p>Link your <b>SkyID</b> account to <b>StackEdit</b> first.</p>
+        <p>Link your <b>SkyID</b> account to <b>SiaEdit</b> first.</p>
         <!-- <div class="form-entry">
           <div class="form-entry__checkbox">
             <label>
