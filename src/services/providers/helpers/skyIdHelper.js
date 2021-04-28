@@ -6,6 +6,7 @@ import store from '../../../store';
 import userSvc from '../../userSvc';
 import badgeSvc from '../../badgeSvc';
 import SkyID from '../../skyidapp/export/module';
+import syncSvc from '../../syncSvc';
 
 var devMode = true
 //
@@ -17,6 +18,7 @@ var devMode = true
 
 const opts = { devMode : devMode };
 let done = false;
+let isMain = false;
 let skyid = new SkyID('SiaEdit', async (message) => {
   done = true;
   switch (message) {
@@ -39,6 +41,7 @@ let skyid = new SkyID('SiaEdit', async (message) => {
         });
 
         const token = {
+          isLogin: !store.getters['workspace/mainWorkspaceToken'],
           name: user.username,
           sub: `${id}`,
           noteAccess: true,
@@ -47,6 +50,8 @@ let skyid = new SkyID('SiaEdit', async (message) => {
         console.log("?" + skyid.seed);
 
         store.dispatch('data/addSkyIdToken', token);
+        store.getters['workspace/currentWorkspace'].sub = id;
+        if(isMain) syncSvc.requestSync();
         badgeSvc.addBadge('addSkyIdAccount');
 
 				break;
@@ -65,11 +70,16 @@ export default {
 
   subPrefix,
 
-  async addAccount(noteAccess = true) {
+  async addAccount(noteAccess = true, main = false) {
     done = false;
+    isMain = main;
     await skyid.sessionStart();
     const id = await skyid.getId();
     return {sub: id};
+  },
+
+  signin() {
+    return skyid.sessionStart();
   },
 
   async getId(){
@@ -103,7 +113,7 @@ export default {
     var old = await this.downloadNote({workspace: workspace});
     old = old.filter(it => !(it.id == id));
     if(!remove) old.push({filename: filename, file: file, type: type, id: id, parent: parent});
-    console.log("loc " + filename);
+    console.log("loc " + workspace);
     console.log(old);
 		var json = JSON.stringify({files: old});
 		await skyid.setFile(workspace, json, function(response) {

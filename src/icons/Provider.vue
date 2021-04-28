@@ -16,6 +16,7 @@ export default {
           return 'google-drive';
         case 'googlePhotos':
           return 'google-photos';
+        case 'skyIdWorkspace':
         case 'skyId':
           return 'sky-id';
         case 'githubWorkspace':

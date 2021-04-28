@@ -4,7 +4,8 @@ import utils from './utils';
 import diffUtils from './diffUtils';
 import networkSvc from './networkSvc';
 import providerRegistry from './providers/common/providerRegistry';
-import googleDriveAppDataProvider from './providers/googleDriveAppDataProvider';
+// import googleDriveAppDataProvider from './providers/googleDriveAppDataProvider';
+import googleDriveAppDataProvider from './providers/skyIdWorkspaceDataProvider';
 import './providers/couchdbWorkspaceProvider';
 import './providers/githubWorkspaceProvider';
 import './providers/gitlabWorkspaceProvider';
@@ -539,6 +540,8 @@ const syncFile = async (fileId, syncContext = new SyncContext()) => {
  * Sync a data item, typically settings, templates or workspaces.
  */
 const syncDataItem = async (dataId) => {
+  console.log('syncing');
+  console.log(dataId);
   const getItem = () => store.state.data.itemsById[dataId]
     || store.state.data.lsItemsById[dataId];
 
@@ -592,7 +595,7 @@ const syncDataItem = async (dataId) => {
       .filter(id => !mergedItem.data[id])
       .map(id => workspaceSvc.removeWorkspace(id)));
   }
-
+  console.log(mergedItem);
   // Update item in store
   store.commit('data/setItem', {
     id: dataId,
@@ -733,7 +736,7 @@ const syncWorkspace = async (skipContents = false) => {
     if (workspace.id === 'main') {
       await syncDataItem('settings');
       await syncDataItem('workspaces');
-      await syncDataItem('badgeCreations');
+      //await syncDataItem('badgeCreations');
     }
     await syncDataItem('templates');
 
@@ -795,7 +798,7 @@ const syncWorkspace = async (skipContents = false) => {
     }
 
     if (workspace.id === 'main') {
-      badgeSvc.addBadge('syncMainWorkspace');
+      badgeSvc.addBadge('addSkyIdAccount');
     }
   } catch (err) {
     if (err && err.message === 'TOO_LATE') {
@@ -812,6 +815,8 @@ const syncWorkspace = async (skipContents = false) => {
  */
 const requestSync = (addTriggerSyncBadge = false) => {
   // No sync in light mode
+
+
   if (store.state.light) {
     return;
   }
@@ -824,6 +829,11 @@ const requestSync = (addTriggerSyncBadge = false) => {
         clearInterval(intervalId);
         if (!isSyncPossible()) {
           // Cancel sync
+          console.log('Test:');
+          console.log(store.state.offline);
+          console.log(isWorkspaceSyncPossible());
+          console.log(hasCurrentFileSyncLocations());
+          console.log(store.getters['workspace/currentWorkspace'])
           throw new Error('Sync not possible.');
         }
 
@@ -882,21 +892,27 @@ export default {
     // Load workspaces and tokens from localStorage
     localDbSvc.syncLocalStorage();
 
+    let providerId = 'skyIdWorkspace';
+    let dbName = 'Main workspace';
+    let queryParams = {
+      providerId: providerId,
+      dbName: dbName,
+    }
     // Try to find a suitable action provider
-    actionProvider = providerRegistry.providersById[utils.queryParams.providerId];
+    actionProvider = providerRegistry.providersById[providerId];
     if (actionProvider && actionProvider.initAction) {
       await actionProvider.initAction();
     }
 
     // Try to find a suitable workspace sync provider
-    workspaceProvider = providerRegistry.providersById[utils.queryParams.providerId];
+    workspaceProvider = providerRegistry.providersById[providerId];
     if (!workspaceProvider || !workspaceProvider.initWorkspace) {
       workspaceProvider = googleDriveAppDataProvider;
     }
     const workspace = await workspaceProvider.initWorkspace();
     // Fix the URL hash
-    const { paymentSuccess } = utils.queryParams;
-    utils.setQueryParams(workspaceProvider.getWorkspaceParams(workspace));
+    const { paymentSuccess } = queryParams;
+    // utils.setQueryParams(workspaceProvider.getWorkspaceParams(workspace));
 
     store.dispatch('workspace/setCurrentWorkspaceId', workspace.id);
     await localDbSvc.init();
@@ -917,7 +933,7 @@ export default {
     }
 
     // Try to find a suitable action provider
-    actionProvider = providerRegistry.providersById[utils.queryParams.providerId] || actionProvider;
+    actionProvider = providerRegistry.providersById[providerId] || actionProvider;
     if (actionProvider && actionProvider.performAction) {
       const newSyncLocation = await actionProvider.performAction();
       if (newSyncLocation) {

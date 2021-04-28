@@ -70,7 +70,7 @@ export default modalTemplate({
     resolve() {
       const url = utils.addQueryParams('', {
         providerId: 'skyIdWorkspace',
-        dbName: 'My SiaEdit',
+        dbName: 'Main workspace',
       }, true);
       this.config.resolve();
       window.open(url);

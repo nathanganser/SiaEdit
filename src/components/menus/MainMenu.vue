@@ -14,6 +14,9 @@
         <span v-if="currentWorkspace.providerId === 'googleDriveAppData'">
           <b>{{currentWorkspace.name}}</b> synced with your Google Drive app data folder.
         </span>
+        <span v-else-if="currentWorkspace.providerId === 'skyIdWorkspaceData'">
+          <b>{{currentWorkspace.name}}</b> synced with your SkyDB.
+        </span>
         <span v-else-if="currentWorkspace.providerId === 'googleDriveWorkspace'">
           <b>{{currentWorkspace.name}}</b> synced with a <a :href="workspaceLocationUrl" target="_blank">Google Drive folder</a>.
         </span>
@@ -27,7 +30,7 @@
           <b>{{currentWorkspace.name}}</b> synced with a <a :href="workspaceLocationUrl" target="_blank">GitLab project</a>.
         </span>
         <span v-else-if="currentWorkspace.providerId === 'skyIdWorkspace'">
-          <b>{{currentWorkspace.name}}</b> synced with a <a :href="workspaceLocationUrl" target="_blank">SkyDB database</a>.
+          <b>{{currentWorkspace.name}}</b> synced with SkyDB.
         </span>
       </div>
       <div class="menu-entry menu-entry--info flex flex--row flex--align-center" v-else>
@@ -39,14 +42,14 @@
     </div>
     <menu-entry v-if="!loginToken" @click.native="signin">
       <icon-login slot="icon"></icon-login>
-      <div>Sign in with Google</div>
+      <div>Sign in with SkyID</div>
       <span>Sync your main workspace and unlock functionalities.</span>
     </menu-entry>
-    <menu-entry @click.native="setPanel('workspaces')">
+    <!-- <menu-entry @click.native="setPanel('workspaces')">
       <icon-database slot="icon"></icon-database>
       <div><div class="menu-entry__label menu-entry__label--count" v-if="workspaceCount">{{workspaceCount}}</div> Workspaces</div>
       <span>Switch to another workspace.</span>
-    </menu-entry>
+    </menu-entry> -->
     <hr>
     <menu-entry @click.native="setPanel('sync')">
       <icon-sync slot="icon"></icon-sync>
@@ -130,6 +133,7 @@ import { mapGetters, mapActions } from 'vuex';
 import MenuEntry from './common/MenuEntry';
 import providerRegistry from '../../services/providers/common/providerRegistry';
 import UserImage from '../UserImage';
+import skyIdHelper from '../../services/providers/helpers/skyIdHelper';
 import googleHelper from '../../services/providers/helpers/googleHelper';
 import syncSvc from '../../services/syncSvc';
 import userSvc from '../../services/userSvc';
@@ -184,8 +188,7 @@ export default {
     }),
     async signin() {
       try {
-        await googleHelper.signin();
-        syncSvc.requestSync();
+        await skyIdHelper.addAccount(true, true);
       } catch (e) {
         // Cancel
       }

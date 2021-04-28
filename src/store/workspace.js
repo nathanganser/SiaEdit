@@ -22,7 +22,8 @@ export default {
       Object.entries(rootGetters['data/workspaces']).forEach(([id, workspace]) => {
         const sanitizedWorkspace = {
           id,
-          providerId: 'googleDriveAppData',
+          // providerId: 'googleDriveAppData',
+          providerId: 'skyIdWorkspaceData',
           sub: mainWorkspaceToken && mainWorkspaceToken.sub,
           ...workspace,
         };
@@ -51,13 +52,16 @@ export default {
     lastSyncActivityKey: (state, { currentWorkspace }) => `${currentWorkspace.id}/lastSyncActivity`,
     lastFocusKey: (state, { currentWorkspace }) => `${currentWorkspace.id}/lastWindowFocus`,
     mainWorkspaceToken: (state, getters, rootState, rootGetters) =>
-      utils.someResult(Object.values(rootGetters['data/googleTokensBySub']), (token) => {
+      // utils.someResult(Object.values(rootGetters['data/googleTokensBySub']), (token) => {
+      utils.someResult(Object.values(rootGetters['data/skyIdTokensBySub']), (token) => {
         if (token.isLogin) {
           return token;
         }
         return null;
       }),
     syncToken: (state, { currentWorkspace, mainWorkspaceToken }, rootState, rootGetters) => {
+      console.log('Here');
+      console.log(currentWorkspace.sub);
       switch (currentWorkspace.providerId) {
         case 'googleDriveWorkspace':
           return rootGetters['data/googleTokensBySub'][currentWorkspace.sub];
