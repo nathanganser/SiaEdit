@@ -17,10 +17,10 @@
 
       <a class="box-entry flex flex--row flex--align-center" v-cloak @drop.prevent="drop" @dragover.prevent>
         <div class="menu-entry__text flex flex--column">
-          <input style="position: absolute; opacity:0; overflow:hidden" type="file" name="imgFile" id="imgFile" accept=".jpg,.jpeg,.png" />
-          <span style="line-height:39px;" class = "drop-area" v-if="!uploading">
+          <input style="position: absolute; opacity:0; overflow:hidden" type="file" name="imgFile" ref="file" @change="select" id="imgFile" accept=".jpg,.jpeg,.png" />
+          <label for="imgFile" style="line-height:39px;" class = "drop-area" v-if="!uploading">
             Drop image here or <u>upload</u>
-          </span>
+          </label>
           <span class = "drop-area" v-else>
             <div style="display: inline-block">
               <div style="float:left;" class="navigation-bar__spinner">
@@ -186,16 +186,23 @@ export default modalTemplate({
       }
     },
     async drop(event) {
-      console.log('test');
       event.preventDefault();
       const file = event.dataTransfer.files[0];
-      console.log(file.type);
       this.uploading = true;
       try {
         const url = await exportSvc.uploadToSkynet(file);
         this.url = url;
         this.uploading = false;
-        //window.open(url);
+      } catch (e) { /* Cancel */ }
+    },
+
+    async select() {
+      const file = this.$refs.file.files[0];
+      this.uploading = true;
+      try {
+        const url = await exportSvc.uploadToSkynet(file);
+        this.url = url;
+        this.uploading = false;
       } catch (e) { /* Cancel */ }
     },
   },
