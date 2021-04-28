@@ -145,4 +145,20 @@ export default {
     store.state.queue.isEmpty = true;
     return url;
   },
+
+  async uploadToSkynet(file) {
+    let url = null;
+    console.log("here");
+    //store.state.queue.isEmpty = false;
+    try {
+      const skylink = await skyClient.uploadFile(file);
+      url = 'https://siasky.net/' + skylink.split(':')[1];
+      console.log("te");
+      console.log(skylink);
+    } catch (error) {
+      console.log(error);
+    }
+    //store.state.queue.isEmpty = true;
+    return url;
+  },
 };

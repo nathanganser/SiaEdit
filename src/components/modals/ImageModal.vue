@@ -14,6 +14,24 @@
         <icon-provider slot="icon" provider-id="googlePhotos"></icon-provider>
         <span>Add Google Photos account</span>
       </menu-entry>
+
+      <a class="box-entry flex flex--row flex--align-center" v-cloak @drop.prevent="drop" @dragover.prevent>
+        <div class="menu-entry__text flex flex--column">
+          <input style="position: absolute; opacity:0; overflow:hidden" type="file" name="imgFile" id="imgFile" accept=".jpg,.jpeg,.png" />
+          <span style="line-height:39px;" class = "drop-area" v-if="!uploading">
+            Drop image here or <u>upload</u>
+          </span>
+          <span class = "drop-area" v-else>
+            <div style="display: inline-block">
+              <div style="float:left;" class="navigation-bar__spinner">
+                <div class="spinner"></div>
+              </div>
+              <div style="float:left;height: 24px;margin-top: 7px;margin-left:2px">Processing...</div>
+            </div>
+          </span>
+        </div>
+      </a>
+
     </div>
     <div class="modal__button-bar">
       <button class="button" @click="reject()">Cancel</button>
@@ -22,11 +40,101 @@
   </modal-inner>
 </template>
 
+<style lang="scss">
+.box-entry {
+  text-align: left;
+  padding: 10px;
+  margin-top: 10px;
+  height: auto;
+  font-size: 17px;
+  line-height: 1.4;
+  text-transform: none;
+  white-space: normal;
+  text-decoration: none;
+  color: #333;
+  background-color: rgba(0, 0, 0, 0.05);
+  border-radius: 4px;
+
+  .drop-area {
+    display: inline-block;
+    font-size: 0.75rem;
+    opacity: 0.67;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    line-height: 24px;
+    text-align: center;
+    cursor: pointer;
+  }
+}
+
+.menu-entry__text {
+  width: 100%;
+  overflow: hidden;
+}
+
+$r: 10px;
+$d: $r * 2;
+$b: $d/10;
+$t: 3000ms;
+$error-color: #333;
+$navbar-bg: #333;
+$navbar-color: mix($navbar-bg, #fff, 33%);
+
+.navigation-bar__spinner {
+  width: 24px;
+  margin: 7px 0 0 8px;
+
+  .icon {
+    width: 24px;
+    height: 24px;
+    color: transparentize($error-color, 0.5);
+  }
+}
+
+.spinner {
+  width: $d;
+  height: $d;
+  display: block;
+  position: relative;
+  border: $b solid transparentize($navbar-color, 0.5);
+  border-radius: 50%;
+  margin: 2px;
+
+  &::before,
+  &::after {
+    content: "";
+    position: absolute;
+    display: block;
+    width: $b;
+    background-color: $navbar-color;
+    border-radius: $b * 0.5;
+    transform-origin: 50% 0;
+  }
+
+  &::before {
+    height: $r * 0.4;
+    left: $r - $b * 1.5;
+    top: 50%;
+    animation: spin $t linear infinite;
+  }
+
+  &::after {
+    height: $r * 0.6;
+    left: $r - $b * 1.5;
+    top: 50%;
+    animation: spin $t/4 linear infinite;
+  }
+}
+</style>
+
 <script>
+/* eslint-disable */
+
 import modalTemplate from './common/modalTemplate';
 import MenuEntry from '../menus/common/MenuEntry';
 import googleHelper from '../../services/providers/helpers/googleHelper';
 import store from '../../store';
+import exportSvc from '../../services/exportSvc';
 
 export default modalTemplate({
   components: {
@@ -34,6 +142,7 @@ export default modalTemplate({
   },
   data: () => ({
     url: '',
+    uploading: false,
   }),
   computed: {
     googlePhotosTokens() {
@@ -75,6 +184,19 @@ export default modalTemplate({
           callback,
         });
       }
+    },
+    async drop(event) {
+      console.log('test');
+      event.preventDefault();
+      const file = event.dataTransfer.files[0];
+      console.log(file.type);
+      this.uploading = true;
+      try {
+        const url = await exportSvc.uploadToSkynet(file);
+        this.url = url;
+        this.uploading = false;
+        //window.open(url);
+      } catch (e) { /* Cancel */ }
     },
   },
 });
