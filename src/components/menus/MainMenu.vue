@@ -45,11 +45,11 @@
       <div>Sign in with SkyID</div>
       <span>Sync your main workspace and unlock functionalities.</span>
     </menu-entry>
-    <!-- <menu-entry @click.native="setPanel('workspaces')">
+    <menu-entry @click.native="setPanel('workspaces')">
       <icon-database slot="icon"></icon-database>
       <div><div class="menu-entry__label menu-entry__label--count" v-if="workspaceCount">{{workspaceCount}}</div> Workspaces</div>
       <span>Switch to another workspace.</span>
-    </menu-entry> -->
+    </menu-entry>
     <hr>
     <menu-entry @click.native="setPanel('sync')">
       <icon-sync slot="icon"></icon-sync>
