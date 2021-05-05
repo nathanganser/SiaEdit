@@ -18,7 +18,6 @@ export default new Provider({
     return gistId;
   },
   async uploadContent(token, content, syncLocation) {
-    console.log('yes here');
     const sky = await skyIdHelper.uploadNote({
       ...syncLocation,
       id: syncLocation.filename,
@@ -32,7 +31,6 @@ export default new Provider({
     };
   },
   async downloadContent(token, syncLocation) {
-    console.log('yes here');
     const data = await skyIdHelper.downloadNote({
       ...syncLocation,
       id: syncLocation.filename,

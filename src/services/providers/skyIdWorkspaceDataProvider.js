@@ -39,7 +39,6 @@ export default new Provider({
 
   prepareChanges(changes) {
 
-    console.log("Hereee: ");
     const workspace = store.getters['workspace/currentWorkspace'];
     const result = [];
     const found = {};
@@ -125,8 +124,6 @@ export default new Provider({
     const dbName = 'main';
     const body = await skyIdHelper.downloadNote({token, filename:contentSyncData.id, workspace:dbName, type: contentSyncData.type, id: contentSyncData.itemId});
     const content = Provider.parseContent(body.file, contentSyncData.itemId);
-    console.log("getting: ");
-    console.log(body.file);
 
     return {
       content,
@@ -144,11 +141,7 @@ export default new Provider({
     }
     const dbName = 'main';
     const body = await skyIdHelper.downloadNote({token, filename: syncData.id, workspace:dbName, parent: '.stackedit-data', type: 'data', id: syncData.id});
-    console.log("what found");
-    console.log(body);
     const item = utils.addItemHash(body);
-    console.log("what found 2");
-    console.log(item);
     return {
       item,
       syncData: {

@@ -66,7 +66,8 @@ module.exports = {
         include: [
           resolve('src'),
           resolve('test'),
-          resolve('node_modules/mermaid')
+          resolve('node_modules/mermaid'),
+          resolve('node_modules/skynet-js')
         ],
         exclude: [
           resolve('node_modules/mermaid/src/diagrams/class/parser'),
@@ -75,6 +76,11 @@ module.exports = {
           resolve('node_modules/mermaid/src/diagrams/git/parser'),
           resolve('node_modules/mermaid/src/diagrams/sequence/parser')
         ],
+        options: {
+          plugins: [
+            '@babel/plugin-transform-spread', '@babel/plugin-proposal-object-rest-spread', '@babel/plugin-proposal-class-properties'
+          ]
+        }
       },
       {
         test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,

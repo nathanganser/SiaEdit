@@ -178,6 +178,11 @@ export default [
         'Use the workspace menu to create a GitLab workspace.',
       ),
       new Feature(
+        'addMySkyWorkspace',
+        'SkyDB workspace creator',
+        'Use the workspace menu to create a SkyDB workspace.',
+      ),
+      new Feature(
         'addSkyIdWorkspace',
         'SkyDB workspace creator',
         'Use the workspace menu to create a SkyDB workspace.',

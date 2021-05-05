@@ -32,6 +32,9 @@
         <span v-else-if="currentWorkspace.providerId === 'skyIdWorkspace'">
           <b>{{currentWorkspace.name}}</b> synced with SkyDB.
         </span>
+        <span v-else-if="currentWorkspace.providerId === 'mySkyWorkspace'">
+          <b>{{currentWorkspace.name}}</b> synced with SkyDB.
+        </span>
       </div>
       <div class="menu-entry menu-entry--info flex flex--row flex--align-center" v-else>
         <div class="menu-entry__icon menu-entry__icon--disabled">
@@ -40,16 +43,30 @@
         <span><b>{{currentWorkspace.name}}</b> not synced.</span>
       </div>
     </div>
-    <menu-entry v-if="!loginToken" @click.native="signin">
+    <menu-entry v-if="loginToken" @click.native="remove(currentWorkspace)">
+      <icon-logout slot="icon"></icon-logout>
+      <div v-if="currentWorkspace.providerId === 'skyIdWorkspace'">
+        Logout of SkyID
+      </div>
+      <div v-else-if="currentWorkspace.providerId === 'mySkyWorkspace'">
+        Logout of MySky
+      </div>
+    </menu-entry>
+    <menu-entry v-if="!loginToken" @click.native="signin('skyId')">
       <icon-login slot="icon"></icon-login>
       <div>Sign in with SkyID</div>
       <span>Sync your main workspace and unlock functionalities.</span>
     </menu-entry>
-    <menu-entry @click.native="setPanel('workspaces')">
+    <menu-entry v-if="!loginToken" @click.native="signin('mySky')">
+      <icon-login slot="icon"></icon-login>
+      <div>Sign in with MySky</div>
+      <span>Sync your main workspace and unlock functionalities.</span>
+    </menu-entry>
+    <!-- <menu-entry @click.native="setPanel('workspaces')">
       <icon-database slot="icon"></icon-database>
       <div><div class="menu-entry__label menu-entry__label--count" v-if="workspaceCount">{{workspaceCount}}</div> Workspaces</div>
       <span>Switch to another workspace.</span>
-    </menu-entry>
+    </menu-entry> -->
     <hr>
     <menu-entry @click.native="setPanel('sync')">
       <icon-sync slot="icon"></icon-sync>
@@ -95,11 +112,11 @@
       <div><div class="menu-entry__label menu-entry__label--count">{{badgeCount}}/{{featureCount}}</div> Badges</div>
       <span>List application features and earned badges.</span>
     </menu-entry>
-    <menu-entry @click.native="accounts">
+    <!-- <menu-entry @click.native="accounts">
       <icon-key slot="icon"></icon-key>
       <div><div class="menu-entry__label menu-entry__label--count">{{accountCount}}</div> Accounts</div>
       <span>Manage access to your external accounts.</span>
-    </menu-entry>
+    </menu-entry> -->
     <menu-entry @click.native="templates">
       <icon-code-braces slot="icon"></icon-code-braces>
       <div><div class="menu-entry__label menu-entry__label--count">{{templateCount}}</div> Templates</div>
@@ -134,12 +151,14 @@ import MenuEntry from './common/MenuEntry';
 import providerRegistry from '../../services/providers/common/providerRegistry';
 import UserImage from '../UserImage';
 import skyIdHelper from '../../services/providers/helpers/skyIdHelper';
+import mySkyHelper from '../../services/providers/helpers/mySkyHelper';
 import googleHelper from '../../services/providers/helpers/googleHelper';
 import syncSvc from '../../services/syncSvc';
 import userSvc from '../../services/userSvc';
 import exportSvc from '../../services/exportSvc';
 import badgeSvc from '../../services/badgeSvc';
 import store from '../../store';
+import utils from '../../services/utils';
 
 export default {
   components: {
@@ -186,9 +205,10 @@ export default {
     ...mapActions('data', {
       setPanel: 'setSideBarPanel',
     }),
-    async signin() {
+    async signin(provider) {
       try {
-        await skyIdHelper.addAccount(true, true);
+        if(provider == 'skyId')await skyIdHelper.addAccount(true, true);
+        else await mySkyHelper.addAccount(true, true);
       } catch (e) {
         // Cancel
       }
@@ -241,6 +261,18 @@ export default {
        window.open(url);
        badgeSvc.addBadge('exportHtml');
      } catch (e) { /* Cancel */ }
+    },
+    async remove(entry) {
+      if(entry.providerId == 'skyIdWorkspace') entry.providerId = 'skyId';
+      else entry.providerId = 'mySky';
+      const tokensBySub = utils.deepCopy(store.getters[`data/${entry.providerId}TokensBySub`]);
+      delete tokensBySub[entry.sub];
+      await store.dispatch('data/patchTokensByType', {
+        [entry.providerId]: tokensBySub,
+      });
+      if (entry.providerId === 'skyId')skyIdHelper.removeAccount();
+      else if (entry.providerId === 'mySky')mySkyHelper.removeAccount();
+      badgeSvc.addBadge('removeAccount');
     },
   },
 };

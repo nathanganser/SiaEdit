@@ -44,15 +44,15 @@ let skyid = new SkyID('SiaEdit', async (message) => {
           isLogin: !store.getters['workspace/mainWorkspaceToken'],
           name: user.username,
           sub: `${id}`,
+          provider: "skyIdWorkspace",
           noteAccess: true,
         };
 
-        console.log("?" + skyid.seed);
-
         store.dispatch('data/addSkyIdToken', token);
         store.getters['workspace/currentWorkspace'].sub = id;
-        if(isMain) syncSvc.requestSync();
+        await syncSvc.init();
         badgeSvc.addBadge('addSkyIdAccount');
+        location.reload();
 
 				break;
 			case 'destroy':
@@ -88,17 +88,17 @@ export default {
 
   async removeAccount(){
     skyid.sessionDestroy();
-    console.log("?" + skyid.seed)
     return;
   },
 
   async downloadNote({filename = null, skyId, workspace, parent = null, type, id}) {
-    console.log("fetch test:" + workspace);
+    console.log("fetch: " + workspace);
     let respObs = '';
 		await skyid.getFile(workspace, function(response, revision) {
-			if (response == '') {
+			if (response == '' || response == null) {
         respObs = [];
 			} else {
+        console.log(response);
 				respObs = JSON.parse(response).files
 			}
       console.log("found")
@@ -113,11 +113,8 @@ export default {
     var old = await this.downloadNote({workspace: workspace});
     old = old.filter(it => !(it.id == id));
     if(!remove) old.push({filename: filename, file: file, type: type, id: id, parent: parent});
-    console.log("loc " + workspace);
-    console.log(old);
 		var json = JSON.stringify({files: old});
 		await skyid.setFile(workspace, json, function(response) {
-      console.log("done " + filename);
 			if (response != true) {
 				alert('Sorry, but upload failed :(')
 			}

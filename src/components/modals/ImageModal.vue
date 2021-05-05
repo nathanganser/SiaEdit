@@ -5,7 +5,7 @@
       <form-entry label="URL" error="url">
         <input slot="field" class="textfield" type="text" v-model.trim="url" @keydown.enter="resolve">
       </form-entry>
-      <menu-entry @click.native="openGooglePhotos(token)" v-for="token in googlePhotosTokens" :key="token.sub">
+      <!-- <menu-entry @click.native="openGooglePhotos(token)" v-for="token in googlePhotosTokens" :key="token.sub">
         <icon-provider slot="icon" provider-id="googlePhotos"></icon-provider>
         <div>Open from Google Photos</div>
         <span>{{token.name}}</span>
@@ -13,7 +13,7 @@
       <menu-entry @click.native="addGooglePhotosAccount">
         <icon-provider slot="icon" provider-id="googlePhotos"></icon-provider>
         <span>Add Google Photos account</span>
-      </menu-entry>
+      </menu-entry> -->
 
       <a class="box-entry flex flex--row flex--align-center" v-cloak @drop.prevent="drop" @dragover.prevent>
         <div class="menu-entry__text flex flex--column">

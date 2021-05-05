@@ -1,14 +1,13 @@
 {
   "presets": [
-    ["env", { "modules": false }],
-    "stage-2"
+    ["@babel/env", { "modules": false }]
   ],
-  "plugins": ["transform-runtime"],
+  "plugins": ["@babel/transform-runtime", "@babel/plugin-transform-spread", "@babel/plugin-proposal-object-rest-spread"],
   "comments": false,
   "env": {
     "test": {
-      "presets": ["env", "stage-2"],
-      "plugins": ["transform-es2015-modules-commonjs", "dynamic-import-node"]
+      "presets": ["env"],
+      "plugins": ["transform-es2015-modules-commonjs", "dynamic-import-node", "@babel/plugin-transform-spread", "@babel/plugin-proposal-object-rest-spread"]
     }
   }
 }

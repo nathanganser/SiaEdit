@@ -61,6 +61,10 @@
         <icon-provider slot="icon" provider-id="googlePhotos"></icon-provider>
         <span>Add Google Photos account</span>
       </menu-entry>
+      <menu-entry @click.native="addMySkyAccount">
+        <icon-provider slot="icon" provider-id="mySky"></icon-provider>
+        <span>Add MySky account</span>
+      </menu-entry>
       <menu-entry @click.native="addSkyIdAccount">
         <icon-provider slot="icon" provider-id="skyId"></icon-provider>
         <span>Add SkyID account</span>
@@ -91,6 +95,7 @@ import dropboxHelper from '../../services/providers/helpers/dropboxHelper';
 import githubHelper from '../../services/providers/helpers/githubHelper';
 import gitlabHelper from '../../services/providers/helpers/gitlabHelper';
 import skyIdHelper from '../../services/providers/helpers/skyIdHelper';
+import mySkyHelper from '../../services/providers/helpers/mySkyHelper';
 import wordpressHelper from '../../services/providers/helpers/wordpressHelper';
 import zendeskHelper from '../../services/providers/helpers/zendeskHelper';
 import badgeSvc from '../../services/badgeSvc';
@@ -147,6 +152,12 @@ export default {
           userId: token.sub,
           name: token.name,
         })),
+        ...Object.values(store.getters['data/mySkyTokensBySub']).map(token => ({
+          token,
+          providerId: 'mySky',
+          userId: token.sub,
+          name: token.name,
+        })),
         ...Object.values(store.getters['data/wordpressTokensBySub']).map(token => ({
           token,
           providerId: 'wordpress',
@@ -173,6 +184,7 @@ export default {
         [entry.providerId]: tokensBySub,
       });
       if (entry.providerId === 'skyId')skyIdHelper.removeAccount();
+      else if (entry.providerId === 'mySky')mySkyHelper.removeAccount();
       badgeSvc.addBadge('removeAccount');
     },
     async addBloggerAccount() {
@@ -207,6 +219,12 @@ export default {
     async addGooglePhotosAccount() {
       try {
         await googleHelper.addPhotosAccount();
+      } catch (e) { /* cancel */ }
+    },
+    async addMySkyAccount() {
+      try {
+        await store.dispatch('modal/open', { type: 'mySkyAccount' });
+        await mySkyHelper.addAccount(true);
       } catch (e) { /* cancel */ }
     },
     async addSkyIdAccount() {

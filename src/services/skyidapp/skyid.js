@@ -25,7 +25,7 @@ export class SkyID {
 
 		if (isOptionTrue('devMode', this.opts)) {
 			console.log('devMode on, using https://skyportal.xyz')
-			this.skynetClient = new SkynetClient('https://skyportal.xyz', this.opts)
+			this.skynetClient = new SkynetClient('https://skyportal.xyz')
 			// let html = `<div id="deprecated_warn" style="position: fixed; top: 0; transform: translateX(-50%); left: 50%; background-color: #B71C1C; padding: 5px 20px; opacity: 0.5; z-index: 99999; color: white; font-size: 80%;">
 			// 		<span style="float:right; padding-left: 10px; cursor: pointer;" onclick="document.getElementById('deprecated_warn').style.display = 'none'">x</span>
 			// 		DevMode is on -
@@ -36,7 +36,7 @@ export class SkyID {
 			// document.body.appendChild(div.firstChild)
 		} else {
 			console.log('devMode off, using auto portal')
-			this.skynetClient = new SkynetClient('', this.opts)
+			this.skynetClient = new SkynetClient('')
 		}
 
 		window.addEventListener("message", (event) => {
@@ -134,16 +134,18 @@ async sessionStart() {
 		showOverlay(this.opts)
 		const { publicKey, privateKey } = genKeyPairFromSeed(this.seed)
 		try {
-			var { data, revision } = await this.skynetClient.db.getJSON(publicKey, dataKey)
+			var { data, skylink } = await this.skynetClient.db.getJSON(publicKey, dataKey)
 		} catch (error) {
 			var data = ''
 			var revision = 0
 		}
 		hideOverlay(this.opts)
-		callback(data, revision)
+		if(data != null && data != '') data = JSON.stringify(data);
+		callback(data, 0)
 	}
 
 	async setJSON(dataKey, json, callback) {
+		if(typeof json != 'object') json = JSON.parse(json);
 		showOverlay(this.opts)
 		const { publicKey, privateKey } = genKeyPairFromSeed(this.seed)
 		try {
@@ -229,7 +231,7 @@ async sessionStart() {
 
 				return { ...accumulator, [path]: file }
 			}, {})
-			var skylink = await this.skynetClient.uploadDirectory(directory, 'uploaded_folder_name')
+			var {skylink} = await this.skynetClient.uploadDirectory(directory, 'uploaded_folder_name')
 		} catch (error) {
 			var skylink = false
 			console.log(error)
@@ -248,7 +250,7 @@ async sessionStart() {
 
 			const url = URL.createObjectURL(encryptedFile)
 			try {
-			  var skylink = await self.skynetClient.uploadFile(encryptedFile)
+			  var {skylink} = await self.skynetClient.uploadFile(encryptedFile)
 			} catch (error) {
 			  console.log(error)
 			  var skylink = false
@@ -261,7 +263,7 @@ async sessionStart() {
 
 	async downloadEncryptedFile(skylink, keyDerivationPath, callback) {
 		showOverlay(this.opts)
-		let fileUrl = this.skynetClient.getSkylinkUrl(skylink)
+		let fileUrl = await this.skynetClient.getSkylinkUrl(skylink)
 		var self = this
 
 		fetchFile(fileUrl, 'Marstorage', function (file) {
@@ -302,14 +304,16 @@ async sessionStart() {
 			return false
 		}
 		try {
-			var { data, revision } = await this.skynetClient.db.getJSON(this.userId, 'profile')
+			var { data, skylink } = await this.skynetClient.db.getJSON(this.userId, 'profile')
 		} catch (error) {
 			var data = ''
 			var revision = 0
+			console.log(error);
 		}
+		if(data != null) data = JSON.stringify(data);
 		return data
 		if (callback != null) {
-			callback(data, revision)
+			callback(data, 0)
 		}
 	}
 

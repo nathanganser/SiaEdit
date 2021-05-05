@@ -11,6 +11,7 @@ import './providers/githubWorkspaceProvider';
 import './providers/gitlabWorkspaceProvider';
 import './providers/googleDriveWorkspaceProvider';
 import './providers/skyIdWorkspaceProvider';
+import './providers/mySkyWorkspaceProvider';
 
 import tempFileSvc from './tempFileSvc';
 import workspaceSvc from './workspaceSvc';
@@ -152,10 +153,6 @@ const applyChanges = (changes) => {
 
   // Process each change
   changes.forEach((change) => {
-    /* eslint-disable */
-    console.log("tes");
-    console.log(change);
-
     const existingSyncData = syncDataById[change.syncDataId];
     const existingItem = getExistingItem(existingSyncData);
     // If item was removed
@@ -540,8 +537,6 @@ const syncFile = async (fileId, syncContext = new SyncContext()) => {
  * Sync a data item, typically settings, templates or workspaces.
  */
 const syncDataItem = async (dataId) => {
-  console.log('syncing');
-  console.log(dataId);
   const getItem = () => store.state.data.itemsById[dataId]
     || store.state.data.lsItemsById[dataId];
 
@@ -595,7 +590,6 @@ const syncDataItem = async (dataId) => {
       .filter(id => !mergedItem.data[id])
       .map(id => workspaceSvc.removeWorkspace(id)));
   }
-  console.log(mergedItem);
   // Update item in store
   store.commit('data/setItem', {
     id: dataId,
@@ -736,7 +730,7 @@ const syncWorkspace = async (skipContents = false) => {
     if (workspace.id === 'main') {
       await syncDataItem('settings');
       await syncDataItem('workspaces');
-      //await syncDataItem('badgeCreations');
+      // await syncDataItem('badgeCreations');
     }
     await syncDataItem('templates');
 
@@ -829,11 +823,6 @@ const requestSync = (addTriggerSyncBadge = false) => {
         clearInterval(intervalId);
         if (!isSyncPossible()) {
           // Cancel sync
-          console.log('Test:');
-          console.log(store.state.offline);
-          console.log(isWorkspaceSyncPossible());
-          console.log(hasCurrentFileSyncLocations());
-          console.log(store.getters['workspace/currentWorkspace'])
           throw new Error('Sync not possible.');
         }
 
@@ -889,15 +878,22 @@ const requestSync = (addTriggerSyncBadge = false) => {
 
 export default {
   async init() {
-    // Load workspaces and tokens from localStorage
     localDbSvc.syncLocalStorage();
-
+    // Load workspaces and tokens from localStorage
+    const loged = Object.values(store.getters['data/mySkyTokensBySub'], (token) => {
+      if (token.isLogin) {
+        return token;
+      }
+      return null;
+    });
     let providerId = 'skyIdWorkspace';
-    let dbName = 'Main workspace';
-    let queryParams = {
-      providerId: providerId,
-      dbName: dbName,
-    }
+    if (loged[0]) providerId = 'mySkyWorkspace';
+    const dbName = 'Main workspace';
+
+    const queryParams = {
+      providerId,
+      dbName,
+    };
     // Try to find a suitable action provider
     actionProvider = providerRegistry.providersById[providerId];
     if (actionProvider && actionProvider.initAction) {

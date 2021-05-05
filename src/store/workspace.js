@@ -23,7 +23,7 @@ export default {
         const sanitizedWorkspace = {
           id,
           // providerId: 'googleDriveAppData',
-          providerId: 'skyIdWorkspaceData',
+          providerId: 'skyIdWorkspace',
           sub: mainWorkspaceToken && mainWorkspaceToken.sub,
           ...workspace,
         };
@@ -53,7 +53,7 @@ export default {
     lastFocusKey: (state, { currentWorkspace }) => `${currentWorkspace.id}/lastWindowFocus`,
     mainWorkspaceToken: (state, getters, rootState, rootGetters) =>
       // utils.someResult(Object.values(rootGetters['data/googleTokensBySub']), (token) => {
-      utils.someResult(Object.values(rootGetters['data/skyIdTokensBySub']), (token) => {
+      utils.someResult(Object.values(rootGetters['data/skyIdTokensBySub']).concat(Object.values(rootGetters['data/mySkyTokensBySub'])), (token) => {
         if (token.isLogin) {
           return token;
         }
@@ -73,6 +73,8 @@ export default {
           return rootGetters['data/couchdbTokensBySub'][currentWorkspace.id];
         case 'skyIdWorkspace':
           return rootGetters['data/skyIdTokensBySub'][currentWorkspace.sub];
+        case 'mySkyWorkspace':
+          return rootGetters['data/mySkyTokensBySub'][currentWorkspace.sub];
         default:
           return mainWorkspaceToken;
       }
@@ -80,13 +82,15 @@ export default {
     loginType: (state, { currentWorkspace }) => {
       switch (currentWorkspace.providerId) {
         case 'googleDriveWorkspace':
-        default:
           return 'google';
         case 'githubWorkspace':
           return 'github';
         case 'gitlabWorkspace':
           return 'gitlab';
+        case 'mySkyWorkspace':
+          return 'mySky';
         case 'skyIdWorkspace':
+        default:
           return 'skyId';
       }
     },

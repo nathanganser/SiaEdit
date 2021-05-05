@@ -62,9 +62,11 @@ import GitlabPublishModal from './modals/providers/GitlabPublishModal';
 import GitlabSaveModal from './modals/providers/GitlabSaveModal';
 import GitlabWorkspaceModal from './modals/providers/GitlabWorkspaceModal';
 import SkyIdAccountModal from './modals/providers/SkyIdAccountModal';
+import MySkyAccountModal from './modals/providers/MySkyAccountModal';
 import SkyIdSaveModal from './modals/providers/SkyIdSaveModal';
 import SkyIdOpenModal from './modals/providers/SkyIdOpenModal';
 import SkyIdWorkspaceModal from './modals/providers/SkyIdWorkspaceModal';
+import MySkyWorkspaceModal from './modals/providers/MySkyWorkspaceModal';
 import WordpressPublishModal from './modals/providers/WordpressPublishModal';
 import BloggerPublishModal from './modals/providers/BloggerPublishModal';
 import BloggerPagePublishModal from './modals/providers/BloggerPagePublishModal';
@@ -116,6 +118,8 @@ export default {
     GitlabPublishModal,
     GitlabSaveModal,
     GitlabWorkspaceModal,
+    MySkyAccountModal,
+    MySkyWorkspaceModal,
     SkyIdAccountModal,
     SkyIdSaveModal,
     SkyIdOpenModal,

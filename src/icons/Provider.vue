@@ -16,6 +16,9 @@ export default {
           return 'google-drive';
         case 'googlePhotos':
           return 'google-photos';
+        case 'mySkyWorkspace':
+        case 'mySky':
+          return 'my-sky';
         case 'skyIdWorkspace':
         case 'skyId':
           return 'sky-id';
@@ -60,6 +63,10 @@ export default {
 
 .icon-provider--sky-id {
   background-image: url(../assets/iconSkyID.svg);
+}
+
+.icon-provider--my-sky {
+  background-image: url(../assets/iconMySky.svg);
 }
 
 .icon-provider--github {

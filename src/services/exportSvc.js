@@ -136,7 +136,7 @@ export default {
     });
     const htmlFile = new File([blob], `${file.name}.${type}`, { type: blob.type });
     try {
-      const skylink = await skyClient.uploadFile(htmlFile);
+      const {skylink} = await skyClient.uploadFile(htmlFile);
       url = 'https://siasky.net/' + skylink.split(':')[1];
     } catch (error) {
       console.log(error);
@@ -149,7 +149,7 @@ export default {
   async uploadToSkynet(file) {
     let url = null;
     try {
-      const skylink = await skyClient.uploadFile(file);
+      const {skylink} = await skyClient.uploadFile(file);
       url = 'https://siasky.net/' + skylink.split(':')[1];
     } catch (error) {
       console.log(error);

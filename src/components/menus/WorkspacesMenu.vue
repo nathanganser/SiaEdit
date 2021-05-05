@@ -29,9 +29,13 @@
       <icon-provider slot="icon" provider-id="googleDriveWorkspace"></icon-provider>
       <span>Add a <b>Google Drive</b> workspace</span>
     </menu-entry>
+    <menu-entry @click.native="addMySkyWorkspace">
+      <icon-provider slot="icon" provider-id="mySky"></icon-provider>
+      <span>Add a <b>MySky</b> workspace</span>
+    </menu-entry>
     <menu-entry @click.native="addSkyIdWorkspace">
       <icon-provider slot="icon" provider-id="skyId"></icon-provider>
-      <span>Add a <b>SkyDB</b> workspace</span>
+      <span>Add a <b>SkyID</b> workspace</span>
     </menu-entry>
   </div>
 </template>
@@ -94,6 +98,13 @@ export default {
       try {
         store.dispatch('modal/open', {
           type: 'skyIdWorkspace',
+        });
+      } catch (e) { /* Cancel */ }
+    },
+    async addMySkyWorkspace() {
+      try {
+        store.dispatch('modal/open', {
+          type: 'mySkyWorkspace',
         });
       } catch (e) { /* Cancel */ }
     },

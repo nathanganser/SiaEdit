@@ -24,8 +24,7 @@ export default new Provider({
     return dbName;
   },
   getSyncDataUrl(fileSyncData, { id }) {
-    const { dbName } = this.getToken();
-    return `${dbName}`;
+    return 'Main workspace';
   },
   getSyncDataDescription(fileSyncData, { id }) {
     return id;
@@ -42,28 +41,26 @@ export default new Provider({
     //
     // console.log(workspace);
     //
-    // let token;
-    // if (workspace) {
-    //   console.log(workspace.sub);
-    //   token = store.getters['data/skyIdTokensBySub'][workspace.sub];
-    // }
-    //
-    // if (!token) {
-    //   token = store.getters['data/skyIdTokensBySub'][Object.keys(store.getters['data/skyIdTokensBySub'])[0]];
-    // }
-    //
-    if (!workspace) {
+    let token;
+    if (workspace) {
+      token = store.getters['data/skyIdTokensBySub'][workspace.sub];
+    }
+
+    if (!token) {
+      token = store.getters['data/skyIdTokensBySub'][Object.keys(store.getters['data/skyIdTokensBySub'])[0]];
+    }
+
+    // if (!workspace) {
       store.dispatch('workspace/patchWorkspacesById', {
         [workspaceId]: {
           id: workspaceId,
           name: dbName,
           providerId: this.id,
-          sub: null,
-          //sub: token.sub,
+          sub: token &&token.sub,
           dbName,
         },
       });
-    }
+    // }
     //
     // badgeSvc.addBadge('addSkyIdWorkspace');
     return store.getters['workspace/workspacesById'][workspaceId];
@@ -81,7 +78,6 @@ export default new Provider({
 
   prepareChanges(changes) {
 
-    console.log("Hereee: ");
     const workspace = store.getters['workspace/currentWorkspace'];
     const result = [];
     const found = {};
@@ -89,7 +85,6 @@ export default new Provider({
     changes.forEach((change) => {
 
       let contentChange;
-      console.log(change);
         const item = {
           id: change.id,
           type: change.type,
@@ -196,8 +191,6 @@ export default new Provider({
     console.log(fileSyncData.parentIds);
     const body = await skyIdHelper.downloadNote({token, filename:fileSyncData.id, workspace:dbName, parent: fileSyncData.parentIds, type: fileSyncData.type, id: fileSyncData.itemId});
     const content = Provider.parseContent(body.file, contentSyncData.itemId);
-    console.log("getting: ");
-    console.log(body.file);
 
     return {
       content,

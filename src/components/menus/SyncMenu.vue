@@ -173,8 +173,6 @@ export default {
       return tokensToArray(store.getters['data/googleTokensBySub'], token => token.isDrive);
     },
     skyIdTokens() {
-      /* eslint-disable */
-      console.log(store.getters['data/skyIdTokensBySub']);
       return tokensToArray(store.getters['data/skyIdTokensBySub']);
     },
     noToken() {
