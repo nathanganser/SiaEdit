@@ -43,7 +43,7 @@ Then run the following commands to create a dist folder and upload it to skynet
 
 ```
 npm run build
-node deploy_skynet.js
+npm run publish
 ```
 
 
