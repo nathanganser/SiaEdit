@@ -38,7 +38,6 @@ export default new Provider({
       workspace: Object.keys(store.getters['data/skyIdTokensBySub'])[0],
       token,
     });
-    console.log('data found ' + data);
     return Provider.parseContent(data.file, `${syncLocation.fileId}/content`);
   },
   async openFile(token, syncLocation) {

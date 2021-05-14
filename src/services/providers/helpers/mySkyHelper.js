@@ -6,17 +6,20 @@ import store from '../../../store';
 import userSvc from '../../userSvc';
 import badgeSvc from '../../badgeSvc';
 import { SkynetClient } from 'skynet-js';
+import { ContentRecordDAC } from "@skynetlabs/content-record-library";
 import syncSvc from '../../syncSvc';
 
 let done = false;
 
-//uncomment for dev
-//const hostApp = "https://skyportal.xyz";
-//const client = new SkynetClient(hostApp);
-//uncomment for prod
-const hostApp = "https://siaedit.hns.skyportal.xyz";
+// uncomment for dev
+// const hostApp = "https://siasky.dev";
+// const client = new SkynetClient(hostApp);
+
+// uncomment for prod
+const hostApp = "siaedit.hns";
 const client = new SkynetClient();
 
+const contentRecord = new ContentRecordDAC();
 const path = hostApp + "/siaedit/main.json";
 
 let mySky = null;
@@ -30,8 +33,7 @@ export default {
   async addAccount(noteAccess = true, main = false) {
     try {
       mySky = await client.loadMySky(hostApp);
-      // await mySky.addPermissions(new Permission(hostApp, hostApp + 'siaedit', PermCategory.Hidden, PermType.Write));
-      // await mySky.addPermissions(new Permission(hostApp, hostApp + 'siaedit', PermCategory.Hidden, PermType.Read));
+      await mySky.loadDacs(contentRecord);
 
       const loggedIn = await mySky.checkLogin();
       let status = null;
@@ -56,7 +58,7 @@ export default {
 
         store.dispatch('data/addMySkyToken', token);
         await syncSvc.init();
-        badgeSvc.addBadge('addSkyIdAccount');
+        // badgeSvc.addBadge('addSkyIdAccount');
         location.reload();
     }
 
@@ -64,10 +66,15 @@ export default {
       console.log(error)
     }
     return true;
-    //return {sub: id};
   },
 
-  signin() {
+  async load() {
+    try {
+      mySky = await client.loadMySky(hostApp);
+      await mySky.loadDacs(contentRecord);
+    } catch (error) {
+      console.log(error)
+    }
   },
 
   async getId(){
@@ -75,7 +82,6 @@ export default {
 
   async removeAccount(){
     try {
-      mySky = await client.loadMySky(hostApp);
       await mySky.logout();
     } catch (error) {
       console.log(error)
@@ -84,30 +90,24 @@ export default {
   },
 
 async downloadNote({filename = null, workspace, parent = null, type, id}) {
-  console.log("fetch: " + workspace);
   let respObs = '';
   await this.getJSON(workspace, function(response, revision) {
-    //console.log(response.length);
     if (response == '' || response == null) {
       respObs = [];
     } else {
       respObs = JSON.parse(response).files
     }
-    console.log("found")
-    console.log(respObs);
   })
   if(!filename) return respObs
   return respObs.filter(file => file.filename == filename && file.type == type && file.parent == parent && file.id == id)[0];
 },
 
   async uploadNote({token, file = null, filename, workspace, type = null, id, parent = null, remove = null}) {
-    console.log("at upload");
     var old = await this.downloadNote({workspace: workspace});
     old = old.filter(it => !(it.id == id));
     if(!remove) old.push({filename: filename, file: file, type: type, id: id, parent: parent});
 		var json = JSON.stringify({files: old});
 		await this.setJSON(workspace, json, function(response) {
-      console.log("done " + filename);
 			if (response != true) {
 				alert('Sorry, but upload failed :(')
 			}
@@ -116,7 +116,6 @@ async downloadNote({filename = null, workspace, parent = null, type, id}) {
 
   async getJSON(dataKey, callback) {
 		try {
-      mySky = await client.loadMySky(hostApp);
 			var { data, skylink } = await mySky.getJSON(path)
 		} catch (error) {
 			var data = ''
@@ -128,7 +127,6 @@ async downloadNote({filename = null, workspace, parent = null, type, id}) {
 	async setJSON(dataKey, json, callback) {
 		if(typeof json != 'object') json = JSON.parse(json);
 		try {
-      mySky = await client.loadMySky(hostApp);
 			await mySky.setJSON(path, json)
 			var success = true
 		} catch (error) {
@@ -137,6 +135,24 @@ async downloadNote({filename = null, workspace, parent = null, type, id}) {
 			var success = false
 		}
 		callback(success)
-	}
+	},
+
+  async publishDAC(url){
+    let skylink = url.split('/');
+    skylink = skylink[skylink.length - 1];
+    try {
+      await contentRecord.recordNewContent({
+        skylink: skylink,
+        metadata: {
+          content: { link: url }
+        }
+      });
+      var success = true
+		} catch (error) {
+			console.log(error)
+			alert('Failed to publish file, please retry.')
+			var success = false
+		}
+  }
 
 };

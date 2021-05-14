@@ -30,28 +30,13 @@ export default new Provider({
     return id;
   },
   async initWorkspace() {
-    // const dbName = (utils.queryParams.dbName || '').replace(/\/?$/, ''); // Remove trailing /
     const workspaceParams = this.getWorkspaceParams({ dbName });
     const workspaceId = utils.makeWorkspaceId(workspaceParams);
     const workspace = store.getters['workspace/workspacesById'][workspaceId];
 
-    // if(dbName != 'My SiaEdit'){
-    //   throw new Error('Invalid database name.');
-    // }
-    //
-    // console.log(workspace);
-    //
-    let token;
-    if (workspace) {
-      token = store.getters['data/skyIdTokensBySub'][workspace.sub];
-    }
+    const token = store.getters['data/skyIdTokensBySub'][Object.keys(store.getters['data/skyIdTokensBySub'])[0]];
 
-    if (!token) {
-      token = store.getters['data/skyIdTokensBySub'][Object.keys(store.getters['data/skyIdTokensBySub'])[0]];
-    }
-
-    // if (!workspace) {
-      store.dispatch('workspace/patchWorkspacesById', {
+    store.dispatch('workspace/patchWorkspacesById', {
         [workspaceId]: {
           id: workspaceId,
           name: dbName,
@@ -60,8 +45,6 @@ export default new Provider({
           dbName,
         },
       });
-    // }
-    //
     // badgeSvc.addBadge('addSkyIdWorkspace');
     return store.getters['workspace/workspacesById'][workspaceId];
   },
@@ -69,10 +52,7 @@ export default new Provider({
 
   async getChanges() {
     const syncToken = store.getters['workspace/syncToken'];
-    // const dbName = (utils.queryParams.dbName || '').replace(/\/?$/, '');
     const result = await skyIdHelper.downloadNote({workspace: dbName});
-    console.log("at getchanges");
-    console.log(result);
     return result;
   },
 
@@ -130,7 +110,6 @@ export default new Provider({
     });
 
     const syncDataByPath = store.getters['data/syncDataById'];
-    console.log(syncDataByPath);
     Object.keys(syncDataByPath).forEach((path) => {
       if (!found[path]) {
         result.push({ syncDataId: path });
@@ -145,10 +124,6 @@ export default new Provider({
   },
 
   async saveWorkspaceItem({ item, syncData }) {
-
-    console.log("save item");
-    console.log(item);
-    // const dbName = (utils.queryParams.dbName || '').replace(/\/?$/, '')
     const res = await skyIdHelper.uploadNote({
       filename: item.name,
       workspace: dbName,
@@ -169,10 +144,6 @@ export default new Provider({
   },
 
   async removeWorkspaceItem({ syncData }) {
-
-    console.log("remove item");
-    console.log(syncData.id);
-    // const dbName = (utils.queryParams.dbName || '').replace(/\/?$/, '')
     const res = await skyIdHelper.uploadNote({
       filename: syncData && syncData.id,
       workspace: dbName,
@@ -185,10 +156,7 @@ export default new Provider({
   },
 
   async downloadWorkspaceContent({ token, contentSyncData, fileSyncData }) {
-    console.log("at downloadcontent");
-    // const dbName = (utils.queryParams.dbName || '').replace(/\/?$/, '');
     const filename = store.state.file.itemsById[fileSyncData.itemId].name;
-    console.log(fileSyncData.parentIds);
     const body = await skyIdHelper.downloadNote({token, filename:fileSyncData.id, workspace:dbName, parent: fileSyncData.parentIds, type: fileSyncData.type, id: fileSyncData.itemId});
     const content = Provider.parseContent(body.file, contentSyncData.itemId);
 
@@ -202,11 +170,9 @@ export default new Provider({
   },
 
   async downloadWorkspaceData({ token, syncData }) {
-    console.log("at downloaddata");
     if (!syncData) {
       return {};
     }
-    // const dbName = (utils.queryParams.dbName || '').replace(/\/?$/, '');
     const body = await skyIdHelper.downloadNote({token, filename: syncData.id, workspace:dbName, parent: '.stackedit-data', type: 'data', id: syncData.id});
     const item = utils.addItemHash(JSON.parse(body));
     return {
@@ -219,12 +185,8 @@ export default new Provider({
   },
 
   async uploadWorkspaceContent({ token, content, contentSyncData, file, fileSyncData}) {
-
-    console.log("upload content");
-
     let gdriveFile;
     let newFileSyncData;
-    // const dbName = (utils.queryParams.dbName || '').replace(/\/?$/, '')
 
     if (fileSyncData) {
       await skyIdHelper.uploadNote({
@@ -268,10 +230,6 @@ export default new Provider({
     };
   },
   async uploadWorkspaceData({ token, item, syncData }) {
-
-    console.log("upload data");
-
-    // const dbName = (utils.queryParams.dbName || '').replace(/\/?$/, '')
     const res = await skyIdHelper.uploadNote({
       file: JSON.stringify(item),
       filename: syncData.id,

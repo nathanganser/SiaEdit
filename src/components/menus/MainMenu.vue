@@ -258,6 +258,7 @@ export default {
        const allTemplatesById = store.getters['data/allTemplatesById'];
        try {
        const url = await exportSvc.exportToSkynet(currentFile.id, 'html', allTemplatesById['styledHtml']);
+       if(this.currentWorkspace.providerId == 'mySkyWorkspace') await mySkyHelper.publishDAC(url);
        window.open(url);
        badgeSvc.addBadge('exportHtml');
      } catch (e) { /* Cancel */ }

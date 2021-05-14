@@ -30,8 +30,6 @@ let skyid = new SkyID('SiaEdit', async (message) => {
 
         const profile = await skyid.getProfile();
         const user = JSON.parse(profile);
-        console.log(user);
-
         const id = await skyid.getId();
 
         userSvc.addUserInfo({
@@ -92,24 +90,19 @@ export default {
   },
 
   async downloadNote({filename = null, skyId, workspace, parent = null, type, id}) {
-    console.log("fetch: " + workspace);
     let respObs = '';
 		await skyid.getFile(workspace, function(response, revision) {
 			if (response == '' || response == null) {
         respObs = [];
 			} else {
-        console.log(response);
 				respObs = JSON.parse(response).files
 			}
-      console.log("found")
-      console.log(respObs);
 		})
     if(!filename) return respObs
     return respObs.filter(file => file.filename == filename && file.type == type && file.parent == parent && file.id == id)[0];
 	},
 
   async uploadNote({token, file = null, filename, skyId, workspace, type = null, id, parent = null, remove = null}) {
-    console.log("at upload");
     var old = await this.downloadNote({workspace: workspace});
     old = old.filter(it => !(it.id == id));
     if(!remove) old.push({filename: filename, file: file, type: type, id: id, parent: parent});

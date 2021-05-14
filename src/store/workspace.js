@@ -60,8 +60,6 @@ export default {
         return null;
       }),
     syncToken: (state, { currentWorkspace, mainWorkspaceToken }, rootState, rootGetters) => {
-      console.log('Here');
-      console.log(currentWorkspace.sub);
       switch (currentWorkspace.providerId) {
         case 'googleDriveWorkspace':
           return rootGetters['data/googleTokensBySub'][currentWorkspace.sub];

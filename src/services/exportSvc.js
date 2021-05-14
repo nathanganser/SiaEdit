@@ -37,8 +37,15 @@ function groupHeadings(headings, level = 1) {
   return result;
 }
 
+// uncomment for dev
+// const skyClient = new SkynetClient('https://siasky.dev');
+// const host = 'https://siasky.dev/'
+
+// uncomment for prod
+const skyClient = new SkynetClient();
+const host = location.hostname + '/';
+
 const containerElt = document.createElement('div');
-const skyClient = new SkynetClient('https://siasky.net');
 containerElt.className = 'hidden-rendering-container';
 document.body.appendChild(containerElt);
 
@@ -137,7 +144,9 @@ export default {
     const htmlFile = new File([blob], `${file.name}.${type}`, { type: blob.type });
     try {
       const {skylink} = await skyClient.uploadFile(htmlFile);
-      url = 'https://siasky.net/' + skylink.split(':')[1];
+      console.log("etrgf");
+      console.log(skyClient.defaultPortalUrl());
+      url = host + skylink.split(':')[1];
     } catch (error) {
       console.log(error);
     }
@@ -150,7 +159,7 @@ export default {
     let url = null;
     try {
       const {skylink} = await skyClient.uploadFile(file);
-      url = 'https://siasky.net/' + skylink.split(':')[1];
+      url = host + skylink.split(':')[1];
     } catch (error) {
       console.log(error);
     }

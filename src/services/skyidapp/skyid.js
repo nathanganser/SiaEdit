@@ -71,7 +71,6 @@ export class SkyID {
 async sessionStart() {
 		let redirect = redirectToSkappContainer(window.location)
 		let devMode = isOptionTrue('devMode', this.opts)
-		console.log(window.location)
 		if (redirect == null && !devMode) {
 			alert('Error: unable to detect dapp container URL')
 		} else {
