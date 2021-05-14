@@ -29,8 +29,18 @@ npm run build
 # build for production and view the bundle analyzer report
 npm run build --report
 ```
+If you're building for development, you need to go to ``mySkyHelper.js`` and uncomment lines #15 and #16 which hardcode the portal for development, then comment the lines that use the default portal for production.
 
 ### Deploy to Skynet
+
+Create a ```vue-skynet_config.js``` to set a skynet portal
+```
+{
+  "portal": "SKYNET_PORTAL_HERE"
+}
+```
+Then run the following commands to create a dist folder and upload it to skynet
+
 ```
 npm run build
 node deploy_skynet.js
