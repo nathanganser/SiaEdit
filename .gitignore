@@ -7,5 +7,6 @@ npm-debug.log*
 stackedit_v4
 chrome-app/*.zip
 /test/unit/coverage/
+dist/
 vue-skynet_config.json
 config/package.json
