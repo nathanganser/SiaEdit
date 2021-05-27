@@ -58,7 +58,7 @@
     "mousetrap": "^1.6.1",
     "node-forge": "^0.10.0",
     "normalize-scss": "^7.0.1",
-    "prismjs": "^1.6.0",
+    "prismjs": "1.9.0",
     "request": "^2.85.0",
     "serve-static": "^1.13.2",
     "sia-js": "github:dawe35/sia-js",
