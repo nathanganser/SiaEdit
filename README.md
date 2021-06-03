@@ -33,10 +33,14 @@ If you're building for development, you need to go to ``mySkyHelper.js`` and unc
 
 ### Deploy to Skynet
 
-Create a ```vue-skynet_config.js``` to set a skynet portal
+Create a ```vue-skynet_config.json``` to set a skynet portal
 ```
 {
-  "portal": "SKYNET_PORTAL_HERE"
+  "portal": "https://siasky.net",
+  "enableNamebase": true,
+  "namebaseDomain": "siaedit",
+  "namebaseAPIKey": "",
+  "namebaseAPISecret": ""
 }
 ```
 Then run the following commands to create a dist folder and upload it to skynet
