@@ -81,19 +81,17 @@ window.SkyidConnect = class SkyidConnect {
 	addDapp(appId, appData, callback) {
 		// fetch file
 		var self = this;
-		this.skyid.getJSON('profile', function (response, revision) {
-			if (response == '') { // file not found
+		this.skyid.getJSON('profile', function (profileObj) {
+			if (profileObj == null) { // file not found
 				alert('Error: unable to fetch dapp list')
 				console.log('Error: unable to fetch dapp list')
 			} else { // success
-				var profileObj = JSON.parse(response)
 				if (typeof profileObj.dapps == 'undefined') {
 					profileObj.dapps = {}
 				}
 				profileObj.dapps[appId] = appData
 
 				// set file
-				let jsonProfile = JSON.stringify(profileObj)
 				self.skyid.setJSON('profile', profileObj, function (success) {
 					if (!success) {
 						alert('Error: unable to save profile.json')
